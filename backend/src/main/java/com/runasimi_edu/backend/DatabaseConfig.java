@@ -1,18 +1,20 @@
 package com.runasimi_edu.backend;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.sql.DataSource;
 
 @Configuration
-public class DatabaseConfig implements WebMvcConfigurer {
+public class DatabaseConfig {
 
+    // DataSource para desarrollo local (MariaDB)
     @Bean
-    public DataSource dataSource() {
+    @Profile("dev")
+    public DataSource devDataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("org.mariadb.jdbc.Driver");
         dataSource.setUrl("jdbc:mariadb://localhost:3306/is2");
@@ -21,13 +23,29 @@ public class DatabaseConfig implements WebMvcConfigurer {
         return dataSource;
     }
 
-  @Override
-public void addCorsMappings(CorsRegistry registry) {
-    registry.addMapping("/**")
-            .allowedOriginPatterns("http://localhost:8088") // Cambia esta línea
-            .allowedMethods("GET", "POST", "PUT", "DELETE")
-            .allowedHeaders("*")
-            .allowCredentials(true);
-}
+    // DataSource para producción (Railway MySQL)
+    @Bean
+    @Profile("prod")
+    public DataSource prodDataSource(@Value("${DATABASE_URL}") String databaseUrl) {
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        
+        // Railway proporciona la URL completa, solo necesitamos ajustar el protocolo
+        String mysqlUrl = databaseUrl.replace("mysql://", "jdbc:mysql://");
+        dataSource.setUrl(mysqlUrl + "?useSSL=true&serverTimezone=UTC&allowPublicKeyRetrieval=true");
+        
+        return dataSource;
+    }
 
+    // DataSource para testing (H2 en memoria)
+    @Bean
+    @Profile("test")
+    public DataSource testDataSource() {
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName("org.h2.Driver");
+        dataSource.setUrl("jdbc:h2:mem:testdb");
+        dataSource.setUsername("sa");
+        dataSource.setPassword("");
+        return dataSource;
+    }
 }

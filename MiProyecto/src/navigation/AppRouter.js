@@ -43,8 +43,7 @@ const AppRouter = () => (
       <Route path="/alumno/mis-actividades" element={<MisActividades />} />
       <Route path="/alumno/perfil" element={<PerfilAlumno />} />
       <Route path="/alumno/juego/numeros" element={<JuegoNumeros />} />
-      <Route path="/alumno/juego/frutas" element={<JuegoFrutas />} />
-      <Route path="/alumno/juego/saludos" element={<JuegoSaludos />} />
+      <Route path="/alumno/juego/frutas" element={<JuegoFrutas />} />      <Route path="/alumno/juego/saludos" element={<JuegoSaludos />} />
       
 
     </Routes>
