@@ -1,9 +1,18 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 
-module.exports = {
-  entry: './index.web.js',
-  mode: 'development',
+module.exports = (env, argv) => {
+  const isProduction = argv.mode === 'production';
+  
+  return {
+    entry: './index.web.js',
+    mode: isProduction ? 'production' : 'development',
+    output: {
+      path: path.resolve(__dirname, 'dist'),
+      filename: isProduction ? '[name].[contenthash].js' : '[name].js',
+      clean: true,
+      publicPath: '/',
+    },
   module: {
     rules: [
       {
@@ -61,4 +70,5 @@ module.exports = {
   experiments: {
     topLevelAwait: true,
   },
+  };
 };

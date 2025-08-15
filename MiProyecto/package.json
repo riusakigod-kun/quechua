@@ -7,7 +7,8 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "web": "webpack serve --mode development",
-    "build:web": "webpack --mode production"
+    "build:web": "webpack --mode production",
+    "build": "npm run build:web"
   },
   "dependencies": {
     "@react-navigation/bottom-tabs": "^7.4.2",
