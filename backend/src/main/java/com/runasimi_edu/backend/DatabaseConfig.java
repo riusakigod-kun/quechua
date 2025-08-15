@@ -1,5 +1,7 @@
 package com.runasimi_edu.backend;
 
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -11,15 +13,24 @@ import javax.sql.DataSource;
 @Configuration
 public class DatabaseConfig implements WebMvcConfigurer {
 
-    @Bean
-    public DataSource dataSource() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName("org.mariadb.jdbc.Driver");
-        dataSource.setUrl("jdbc:mariadb://localhost:3306/is2");
-        dataSource.setUsername("root");
-        dataSource.setPassword("1234");
-        return dataSource;
-    }
+  @Value("${DB_URL}")
+  private String dbUrl;
+
+  @Value("${DB_USERNAME}")
+  private String dbUsername;
+
+  @Value("${DB_PASSWORD}")
+  private String dbPassword;
+
+  @Bean
+  public DataSource dataSource() {
+    DriverManagerDataSource dataSource = new DriverManagerDataSource();
+    dataSource.setDriverClassName("org.mariadb.jdbc.Driver");
+    dataSource.setUrl(dbUrl);
+    dataSource.setUsername(dbUsername);
+    dataSource.setPassword(dbPassword);
+    return dataSource;
+  }
 
   @Override
 public void addCorsMappings(CorsRegistry registry) {
